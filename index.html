@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoGuard | Sistema de Controlo de Actividades</title>
+    <meta name="description"
+        content="Sistema avançado para identificação, gestão e monitorização de impactos ambientais e sociais para organizações e municípios.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Ionicons for icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <ion-icon name="leaf"></ion-icon>
+                </div>
+                <span>EcoGuard</span>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-link active" data-page="dashboard">
+                    <ion-icon name="grid-outline"></ion-icon>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-link" data-page="activities">
+                    <ion-icon name="list-outline"></ion-icon>
+                    <span>Actividades</span>
+                </a>
+                <a href="#" class="nav-link" data-page="map">
+                    <ion-icon name="map-outline"></ion-icon>
+                    <span>Mapa de Impactos</span>
+                </a>
+                <a href="#" class="nav-link" data-page="impacts">
+                    <ion-icon name="alert-circle-outline"></ion-icon>
+                    <span>Impactos</span>
+                </a>
+                <a href="#" class="nav-link" data-page="policies">
+                    <ion-icon name="book-outline"></ion-icon>
+                    <span>Políticas</span>
+                </a>
+                <a href="#" class="nav-link" data-page="reports">
+                    <ion-icon name="bar-chart-outline"></ion-icon>
+                    <span>Relatórios</span>
+                </a>
+                <a href="#" class="nav-link" data-page="help">
+                    <ion-icon name="help-circle-outline"></ion-icon>
+                    <span>Ajuda & Guia</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=10b981&color=fff"
+                        alt="User Avatar">
+                    <div class="user-info">
+                        <span class="user-name">Administrador</span>
+                        <span class="user-role">Município</span>
+                        <a href="#" class="logout-link">Sair do Sistema</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-box">
+                    <ion-icon name="search-outline"></ion-icon>
+                    <input type="text" placeholder="Pesquisar projectos ou impactos...">
+                </div>
+                <div class="top-actions">
+                    <button class="btn-icon">
+                        <ion-icon name="notifications-outline"></ion-icon>
+                        <span class="badge"></span>
+                    </button>
+                    <button class="btn-primary" id="add-activity-btn">
+                        <ion-icon name="add-outline"></ion-icon>
+                        Novo Registo
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area (Dynamic) -->
+            <div id="content-area" class="content-area">
+                <!-- Dashboard Content (Default) -->
+                <section id="dashboard" class="page-section active">
+                    <div class="page-header">
+                        <h1>Visão Geral do Sistema</h1>
+                        <p>Bem-vindo ao centro de controlo de actividades ambientais e sociais.</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <ion-icon name="analytics-outline"></ion-icon>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Actividades Activas</h3>
+                                <div class="stat-value">42</div>
+                                <div class="stat-trend positive">
+                                    <ion-icon name="trending-up-outline"></ion-icon>
+                                    12% aumento
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon blue">
+                                <ion-icon name="shield-checkmark-outline"></ion-icon>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Cumprimento Legal</h3>
+                                <div class="stat-value">98.4%</div>
+                                <div class="stat-trend positive">
+                                    <ion-icon name="checkmark-circle-outline"></ion-icon>
+                                    Conforme
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">
+                                <ion-icon name="warning-outline"></ion-icon>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Alertas Críticos</h3>
+                                <div class="stat-value">3</div>
+                                <div class="stat-trend negative">
+                                    <ion-icon name="alert-outline"></ion-icon>
+                                    Requer atenção
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">
+                                <ion-icon name="people-outline"></ion-icon>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Impacto Social</h3>
+                                <div class="stat-value">Médio</div>
+                                <div class="stat-trend neutral">
+                                    Estável
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="chart-container glass">
+                            <div class="chart-header">
+                                <h2>Monitorização de Impactos</h2>
+                                <select>
+                                    <option>Últimos 30 dias</option>
+                                    <option>Último ano</option>
+                                </select>
+                            </div>
+                            <div class="placeholder-chart">
+                                <!-- Chart will be rendered here -->
+                                <div class="bar-chart">
+                                    <div class="bar" style="height: 60%"></div>
+                                    <div class="bar" style="height: 80%"></div>
+                                    <div class="bar" style="height: 45%"></div>
+                                    <div class="bar" style="height: 90%"></div>
+                                    <div class="bar" style="height: 55%"></div>
+                                    <div class="bar" style="height: 70%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recent-activities glass">
+                            <div class="chart-header">
+                                <h2>Actividades Recentes</h2>
+                                <a href="#" class="view-all">Ver todas</a>
+                            </div>
+                            <div class="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-status done"></div>
+                                    <div class="activity-detail">
+                                        <h4>Limpeza Urbana - Zona Norte</h4>
+                                        <span>Há 2 horas • Gestão de Resíduos</span>
+                                    </div>
+                                    <div class="activity-impact low">Baixo</div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-status pending"></div>
+                                    <div class="activity-detail">
+                                        <h4>Inspecção Industrial - Unidade B</h4>
+                                        <span>Há 5 horas • Emissões Atmosféricas</span>
+                                    </div>
+                                    <div class="activity-impact high">Alto</div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-status done"></div>
+                                    <div class="activity-detail">
+                                        <h4>Workshop de Sustentabilidade</h4>
+                                        <span>Ontem • Social / Educativo</span>
+                                    </div>
+                                    <div class="activity-impact none">Nulo</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reports Page -->
+                <section id="reports" class="page-section">
+                    <div class="page-header">
+                        <h1>Relatórios de Sustentabilidade</h1>
+                        <p>Analise os dados consolidados e exporte relatórios de desempenho.</p>
+                    </div>
+                    <div class="reports-container">
+                        <div class="report-filters glass">
+                            <div class="filter-group">
+                                <label>Período</label>
+                                <select>
+                                    <option>Janeiro 2026</option>
+                                    <option>Fevereiro 2026</option>
+                                    <option>Março 2026</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Tipo de Impacto</label>
+                                <select>
+                                    <option>Todos</option>
+                                    <option>Ambiental</option>
+                                    <option>Social</option>
+                                </select>
+                            </div>
+                            <button class="btn-primary" id="generate-report">
+                                <ion-icon name="document-text-outline"></ion-icon>
+                                Gerar PDF
+                            </button>
+                        </div>
+                        <div class="report-preview glass">
+                            <div class="preview-header">
+                                <h2>Resumo de Desempenho Ambiental</h2>
+                                <span class="badge-status success">Auditado</span>
+                            </div>
+                            <div class="report-stats">
+                                <div class="mini-stat">
+                                    <span>Incidentes</span>
+                                    <strong>0</strong>
+                                </div>
+                                <div class="mini-stat">
+                                    <span>Meta de Reciclagem</span>
+                                    <strong>85%</strong>
+                                </div>
+                                <div class="mini-stat">
+                                    <span>KPI Social</span>
+                                    <strong>Excelente</strong>
+                                </div>
+                            </div>
+                            <div class="report-chart placeholder-chart">
+                                <div class="bar-chart horizontal">
+                                    <div class="bar-row">
+                                        <label>Ar</label>
+                                        <div class="bar-wrap">
+                                            <div class="bar" style="width: 90%; height: 20px;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="bar-row">
+                                        <label>Água</label>
+                                        <div class="bar-wrap">
+                                            <div class="bar" style="width: 70%; height: 20px; background: #388bfd;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bar-row">
+                                        <label>Solo</label>
+                                        <div class="bar-wrap">
+                                            <div class="bar" style="width: 85%; height: 20px; background: #8b5cf6;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Map Page -->
+                <section id="map" class="page-section">
+                    <div class="page-header">
+                        <h1>Geolocalização de Impactos</h1>
+                        <p>Visualize as actividades e pontos de controlo no mapa do município.</p>
+                    </div>
+                    <div class="map-container glass">
+                        <div id="interactive-map" class="map-placeholder">
+                            <div class="map-overlay">
+                                <div class="map-marker" style="top: 30%; left: 40%;"
+                                    data-tooltip="Inspecção Industrial - Crítico">
+                                    <ion-icon name="alert-circle" style="color: var(--danger);"></ion-icon>
+                                </div>
+                                <div class="map-marker" style="top: 50%; left: 70%;"
+                                    data-tooltip="Limpeza Urbana - Baixo">
+                                    <ion-icon name="checkmark-circle" style="color: var(--success);"></ion-icon>
+                                </div>
+                                <div class="map-marker" style="top: 20%; left: 60%;"
+                                    data-tooltip="Estação de Tratamento">
+                                    <ion-icon name="water" style="color: var(--info);"></ion-icon>
+                                </div>
+                                <div class="map-controls">
+                                    <button><ion-icon name="add"></ion-icon></button>
+                                    <button><ion-icon name="remove"></ion-icon></button>
+                                    <button><ion-icon name="locate"></ion-icon></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="map-legend">
+                            <h3>Legenda</h3>
+                            <ul>
+                                <li><span class="dot danger"></span> Risco Crítico</li>
+                                <li><span class="dot success"></span> Em Conformidade</li>
+                                <li><span class="dot info"></span> Ponto de Controlo</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Help Page -->
+                <section id="help" class="page-section">
+                    <div class="page-header">
+                        <h1>Guia do Sistema</h1>
+                        <p>Aprenda a maximizar o controlo de impactos com o EcoGuard.</p>
+                    </div>
+                    <div class="glass help-card">
+                        <div class="help-image-container">
+                            <img src="eco_dashboard_hero.png" alt="Dashboard Preview" class="hero-img">
+                        </div>
+                        <div class="help-text">
+                            <h2>Visão Geral da Tecnologia</h2>
+                            <p>O EcoGuard utiliza análise preditiva para identificar riscos ambientais antes que se
+                                tornem problemas críticos. Este painel permite que municípios:</p>
+                            <ul>
+                                <li>Monitorizem emissões em tempo real.</li>
+                                <li>Façam o seguimento de políticas de resíduos.</li>
+                                <li>Avaliem o impacto social de novos projectos.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for New Activity -->
+    <div id="modal-container" class="modal-container">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h2>Registar Nova Actividade</h2>
+                <button class="close-modal"><ion-icon name="close-outline"></ion-icon></button>
+            </div>
+            <form id="activity-form">
+                <div class="form-group">
+                    <label>Título da Actividade</label>
+                    <input type="text" placeholder="Ex: Inspecção de Efluentes">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <select>
+                            <option>Gestão de Resíduos</option>
+                            <option>Emissões Atmosféricas</option>
+                            <option>Impacto Social</option>
+                            <option>Uso de Recursos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nível de Risco</label>
+                        <select>
+                            <option>Insignificante</option>
+                            <option>Baixo</option>
+                            <option>Moderado</option>
+                            <option>Crítico</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Descrição e Medidas de Mitigação</label>
+                    <textarea rows="4" placeholder="Descreva os possíveis impactos e acções preventivas..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Registo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

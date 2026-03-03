@@ -221,6 +221,84 @@
                     </div>
                 </section>
 
+                <!-- Activities Page -->
+                <section id="activities" class="page-section">
+                    <div class="page-header">
+                        <h1>Gestão de Actividades</h1>
+                        <p>Lista completa de todas as actividades registadas no sistema.</p>
+                    </div>
+                    <div class="glass" style="margin-bottom: 24px;">
+                        <div class="chart-header">
+                            <h2>Histórico de Registos</h2>
+                        </div>
+                        <div class="full-activity-list activity-list">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Impacts Page -->
+                <section id="impacts" class="page-section">
+                    <div class="page-header">
+                        <h1>Identificação de Impactos</h1>
+                        <p>Análise detalhada de riscos e impactos identificados.</p>
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="glass">
+                            <h2>Distribuição de Riscos</h2>
+                            <p style="color: var(--text-muted); margin-bottom: 20px;">Visualização baseada em dados
+                                reais do MongoDB.</p>
+                            <div class="placeholder-chart">
+                                <div class="bar-chart" id="impacts-risk-chart">
+                                    <!-- Dynamic -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass">
+                            <h2>Categorias Críticas</h2>
+                            <div id="critical-categories-list" style="margin-top: 20px;">
+                                <!-- Dynamic -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Policies Page -->
+                <section id="policies" class="page-section">
+                    <div class="page-header">
+                        <h1>Políticas e Procedimentos</h1>
+                        <p>Documentação normativa para gestão sustentável.</p>
+                    </div>
+                    <div class="glass">
+                        <div class="activity-item">
+                            <ion-icon name="document-lock-outline"
+                                style="font-size: 32px; color: var(--accent);"></ion-icon>
+                            <div class="activity-detail">
+                                <h4>Norma ISO 14001:2015</h4>
+                                <span>Gestão Ambiental - Requisitos com orientações para uso.</span>
+                            </div>
+                            <button class="btn-primary" style="padding: 8px 16px;">Ver PDF</button>
+                        </div>
+                        <div class="activity-item">
+                            <ion-icon name="shield-checkmark-outline"
+                                style="font-size: 32px; color: var(--accent);"></ion-icon>
+                            <div class="activity-detail">
+                                <h4>Regulamento de Resíduos Sólidos</h4>
+                                <span>Postura municipal sobre recolha e tratamento.</span>
+                            </div>
+                            <button class="btn-primary" style="padding: 8px 16px;">Ver PDF</button>
+                        </div>
+                        <div class="activity-item">
+                            <ion-icon name="leaf-outline" style="font-size: 32px; color: var(--accent);"></ion-icon>
+                            <div class="activity-detail">
+                                <h4>Plano Director Municipal</h4>
+                                <span>Ordenamento do território e zonas de protecção.</span>
+                            </div>
+                            <button class="btn-primary" style="padding: 8px 16px;">Ver PDF</button>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Reports Page -->
                 <section id="reports" class="page-section">
                     <div class="page-header">
@@ -272,22 +350,22 @@
                             <div class="report-chart placeholder-chart">
                                 <div class="bar-chart horizontal">
                                     <div class="bar-row">
-                                        <label>Ar</label>
+                                        <label style="font-size: 0.75rem;">Resíduos</label>
                                         <div class="bar-wrap">
-                                            <div class="bar" style="width: 90%; height: 20px;"></div>
+                                            <div class="bar" style="width: 0%; height: 20px;"></div>
                                         </div>
                                     </div>
                                     <div class="bar-row">
-                                        <label>Água</label>
+                                        <label style="font-size: 0.75rem;">Emissões</label>
                                         <div class="bar-wrap">
-                                            <div class="bar" style="width: 70%; height: 20px; background: #388bfd;">
+                                            <div class="bar" style="width: 0%; height: 20px; background: #388bfd;">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="bar-row">
-                                        <label>Solo</label>
+                                        <label style="font-size: 0.75rem;">Social</label>
                                         <div class="bar-wrap">
-                                            <div class="bar" style="width: 85%; height: 20px; background: #8b5cf6;">
+                                            <div class="bar" style="width: 0%; height: 20px; background: #8b5cf6;">
                                             </div>
                                         </div>
                                     </div>

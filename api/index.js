@@ -58,8 +58,28 @@ app.post('/api/activities', async (req, res) => {
 // Stats Route
 app.get('/api/stats', async (req, res) => {
     try {
-        const count = await Activity.countDocuments();
-        res.json({ activeActivities: count });
+        const total = await Activity.countDocuments();
+        const pending = await Activity.countDocuments({ status: 'Pendente' });
+        const critical = await Activity.countDocuments({ risk: 'Crítico' });
+
+        // Count by risk for the chart
+        const risks = await Activity.aggregate([
+            { $group: { _id: '$risk', count: { $sum: 1 } } }
+        ]);
+
+        // Count by category
+        const categories = await Activity.aggregate([
+            { $group: { _id: '$category', count: { $sum: 1 } } }
+        ]);
+
+        res.json({
+            totalActivities: total,
+            activeActivities: pending,
+            criticalAlerts: critical,
+            riskDistribution: risks,
+            categoryDistribution: categories,
+            complianceLevel: total > 0 ? (((total - critical) / total) * 100).toFixed(1) : 100
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

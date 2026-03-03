@@ -29,6 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (targetPage === 'activities' || targetPage === 'dashboard') {
                 fetchActivities();
+                fetchStats();
+            } else if (targetPage === 'reports') {
+                fetchReportsData();
+            } else if (targetPage === 'map') {
+                updateMapMarkers();
+            } else if (targetPage === 'impacts') {
+                fetchStats(); // Stats contains risk/category distribution needed for impacts
             }
         });
     });
@@ -44,15 +51,146 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Fetch Stats from API
     async function fetchStats() {
         try {
             const response = await fetch(`${API_URL}/stats`);
             const stats = await response.json();
-            const activeVal = document.querySelectorAll('.stat-value')[0];
-            if (activeVal) activeVal.innerText = stats.activeActivities || 0;
+
+            const statValues = document.querySelectorAll('.stat-value');
+            if (statValues.length >= 3) {
+                statValues[0].innerText = stats.totalActivities || 0;
+                statValues[1].innerText = (stats.complianceLevel || 100) + '%';
+                statValues[2].innerText = stats.criticalAlerts || 0;
+
+                const socialIndex = stats.categoryDistribution?.find(c => c._id === 'Impacto Social')?.count || 0;
+                statValues[3].innerText = socialIndex > 5 ? 'Elevado' : (socialIndex > 1 ? 'Médio' : 'Baixo');
+            }
+
+            updateDashboardChart(stats.riskDistribution);
+            updateImpactsPage(stats);
         } catch (err) {
             console.error('Erro ao buscar estatísticas:', err);
+        }
+    }
+
+    function updateImpactsPage(stats) {
+        const impactsChart = document.getElementById('impacts-risk-chart');
+        if (impactsChart) {
+            updateChartElement(impactsChart, stats.riskDistribution);
+        }
+
+        const criticalList = document.getElementById('critical-categories-list');
+        if (criticalList) {
+            criticalList.innerHTML = stats.categoryDistribution?.map(cat => `
+                <div class="activity-item" style="border-left: 4px solid var(--accent); margin-bottom: 12px; background: rgba(255,255,255,0.02)">
+                    <div class="activity-detail">
+                        <h4>${cat._id}</h4>
+                        <span style="color: var(--text-muted)">${cat.count} registos activos</span>
+                    </div>
+                    <div class="activity-impact" style="background: var(--glass-bg)">${Math.round((cat.count / stats.totalActivities) * 100) || 0}%</div>
+                </div>
+            `).join('') || '<p>Sem dados.</p>';
+        }
+    }
+
+    function updateChartElement(element, riskData) {
+        const risks = ['Insignificante', 'Baixo', 'Moderado', 'Crítico'];
+        const dataMap = {};
+        riskData?.forEach(item => dataMap[item._id] = item.count);
+
+        element.innerHTML = risks.map(risk => {
+            const count = dataMap[risk] || 0;
+            const height = Math.min(100, (count * 20) + 10);
+            return `
+                <div class="bar-container" style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1;">
+                    <div class="bar" style="height: ${height}%; width: 100%; background: var(--accent); border-radius: 4px;" title="${risk}: ${count}"></div>
+                    <span style="font-size: 0.6rem; color: var(--text-muted); cursor: default">${risk}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function updateDashboardChart(riskData) {
+        const chart = document.querySelector('.bar-chart');
+        if (!chart) return;
+
+        const risks = ['Insignificante', 'Baixo', 'Moderado', 'Crítico'];
+        const dataMap = {};
+        riskData?.forEach(item => dataMap[item._id] = item.count);
+
+        chart.innerHTML = risks.map(risk => {
+            const count = dataMap[risk] || 0;
+            const height = Math.min(100, (count * 20) + 10); // Dynamic height
+            return `
+                <div class="bar-container" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <div class="bar" style="height: ${height}%; width: 30px; background: var(--accent); border-radius: 4px;" title="${risk}: ${count}"></div>
+                    <span style="font-size: 0.6rem; color: var(--text-muted); writing-mode: vertical-lr; transform: rotate(180deg);">${risk}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function fetchReportsData() {
+        try {
+            const response = await fetch(`${API_URL}/stats`);
+            const stats = await response.json();
+
+            const miniStats = document.querySelectorAll('.mini-stat strong');
+            if (miniStats.length >= 3) {
+                miniStats[0].innerText = stats.criticalAlerts || 0;
+                miniStats[1].innerText = (stats.complianceLevel || 100) + '%';
+                miniStats[2].innerText = stats.totalActivities > 0 ? 'Activo' : 'Sem Dados';
+            }
+
+            // Update horizontal bars in reports
+            const bars = document.querySelectorAll('.report-chart .bar');
+            if (bars.length >= 3) {
+                const total = stats.totalActivities || 1;
+                const cat1 = stats.categoryDistribution?.find(c => c._id === 'Gestão de Resíduos')?.count || 0;
+                const cat2 = stats.categoryDistribution?.find(c => c._id === 'Emissões Atmosféricas')?.count || 0;
+                const cat3 = stats.categoryDistribution?.find(c => c._id === 'Impacto Social')?.count || 0;
+
+                bars[0].style.width = Math.min(100, (cat1 / total) * 100) + '%';
+                bars[1].style.width = Math.min(100, (cat2 / total) * 100) + '%';
+                bars[2].style.width = Math.min(100, (cat3 / total) * 100) + '%';
+            }
+        } catch (err) {
+            console.error('Erro ao buscar dados do relatório:', err);
+        }
+    }
+
+    async function updateMapMarkers() {
+        const mapOverlay = document.querySelector('.map-overlay');
+        if (!mapOverlay) return;
+
+        try {
+            const response = await fetch(`${API_URL}/activities`);
+            const activities = await response.json();
+
+            // Clear existing markers except controls
+            const existingMarkers = mapOverlay.querySelectorAll('.map-marker');
+            existingMarkers.forEach(m => m.remove());
+
+            activities.forEach((activity, index) => {
+                const marker = document.createElement('div');
+                marker.className = 'map-marker';
+
+                // Random position for visual effect since we don't have coords
+                const top = 20 + (Math.random() * 60);
+                const left = 20 + (Math.random() * 60);
+
+                marker.style.top = `${top}%`;
+                marker.style.left = `${left}%`;
+                marker.setAttribute('data-tooltip', activity.title);
+
+                const color = activity.risk === 'Crítico' ? 'var(--danger)' :
+                    (activity.risk === 'Moderado' ? 'var(--warning)' : 'var(--success)');
+
+                marker.innerHTML = `<ion-icon name="location" style="color: ${color}; font-size: 24px;"></ion-icon>`;
+                mapOverlay.appendChild(marker);
+            });
+        } catch (err) {
+            console.error('Erro ao actualizar mapa:', err);
         }
     }
 
@@ -89,12 +227,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateActivityLists(activities) {
         const dashboardList = document.querySelector('.activity-list');
-        if (dashboardList) {
-            if (activities.length === 0) {
-                dashboardList.innerHTML = '<p style="color: var(--text-muted); padding: 20px;">Nenhuma actividade registada.</p>';
-                return;
-            }
-            dashboardList.innerHTML = activities.slice(0, 5).map(activity => `
+        const fullList = document.querySelector('.full-activity-list');
+
+        const renderItem = activity => `
                 <div class="activity-item">
                     <div class="activity-status ${activity.status === 'Concluído' ? 'done' : 'pending'}" 
                          onclick="window.updateStatus('${activity._id}', '${activity.status}')" 
@@ -109,7 +244,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         <ion-icon name="trash-outline"></ion-icon>
                     </button>
                 </div>
-            `).join('');
+            `;
+
+        if (dashboardList) {
+            dashboardList.innerHTML = activities.length === 0
+                ? '<p style="color: var(--text-muted); padding: 20px;">Nenhum registo activo.</p>'
+                : activities.slice(0, 5).map(renderItem).join('');
+        }
+
+        if (fullList) {
+            fullList.innerHTML = activities.length === 0
+                ? '<p style="color: var(--text-muted); padding: 20px;">Nenhuma actividade registada no MongoDB.</p>'
+                : activities.map(renderItem).sort((a, b) => new Date(b.date) - new Date(a.date)).join('');
         }
     }
 
@@ -197,36 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Helper functions
-    function createPlaceholderPage(id) {
-        const contentArea = document.getElementById('content-area');
-        const section = document.createElement('section');
-        section.id = id;
-        section.className = 'page-section';
 
-        const titles = {
-            activities: 'Gestão de Actividades',
-            map: 'Geolocalização de Impactos',
-            impacts: 'Identificação de Impactos',
-            policies: 'Políticas e Procedimentos',
-            reports: 'Relatórios de Sustentabilidade'
-        };
-
-        section.innerHTML = `
-            <div class="page-header">
-                <h1>${titles[id] || id.charAt(0).toUpperCase() + id.slice(1)}</h1>
-                <p>Gerencie informações relacionadas a ${id}.</p>
-            </div>
-            <div class="glass" style="height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-                <ion-icon name="construct-outline" style="font-size: 48px; color: var(--accent); margin-bottom: 20px;"></ion-icon>
-                <h3>Módulo MongoDB Active</h3>
-                <p style="color: var(--text-muted); max-width: 400px; margin-top: 10px;">Os dados de ${id} estão a ser sincronizados com o Cluster0.</p>
-            </div>
-        `;
-
-        contentArea.appendChild(section);
-        return section;
-    }
 
     function showNotification(message, type = 'success') {
         const notification = document.createElement('div');

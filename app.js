@@ -56,6 +56,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    async function deleteActivity(id) {
+        if (!confirm('Tem certeza que deseja remover esta actividade?')) return;
+        try {
+            const response = await fetch(`${API_URL}/activities/${id}`, { method: 'DELETE' });
+            if (response.ok) {
+                showNotification('Actividade removida.', 'success');
+                fetchActivities();
+                fetchStats();
+            }
+        } catch (err) {
+            showNotification('Erro ao remover.', 'danger');
+        }
+    }
+
+    async function updateStatus(id, currentStatus) {
+        const newStatus = currentStatus === 'Pendente' ? 'Concluído' : 'Pendente';
+        try {
+            const response = await fetch(`${API_URL}/activities/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+            if (response.ok) {
+                showNotification('Estado actualizado.', 'success');
+                fetchActivities();
+            }
+        } catch (err) {
+            showNotification('Erro ao actualizar.', 'danger');
+        }
+    }
+
     function updateActivityLists(activities) {
         const dashboardList = document.querySelector('.activity-list');
         if (dashboardList) {
@@ -63,18 +94,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 dashboardList.innerHTML = '<p style="color: var(--text-muted); padding: 20px;">Nenhuma actividade registada.</p>';
                 return;
             }
-            dashboardList.innerHTML = activities.slice(0, 3).map(activity => `
+            dashboardList.innerHTML = activities.slice(0, 5).map(activity => `
                 <div class="activity-item">
-                    <div class="activity-status ${activity.status === 'Concluído' ? 'done' : 'pending'}"></div>
+                    <div class="activity-status ${activity.status === 'Concluído' ? 'done' : 'pending'}" 
+                         onclick="window.updateStatus('${activity._id}', '${activity.status}')" 
+                         style="cursor: pointer" title="Alternar Estado"></div>
                     <div class="activity-detail">
                         <h4>${activity.title}</h4>
                         <span>${new Date(activity.date).toLocaleDateString()} • ${activity.category}</span>
                     </div>
                     <div class="activity-impact impact-${activity.risk.toLowerCase()}">${activity.risk}</div>
+                    <button onclick="window.deleteActivity('${activity._id}')" class="btn-delete" style="background: transparent; border: none; color: var(--danger); cursor: pointer; font-size: 18px; display: flex;">
+                        <ion-icon name="trash-outline"></ion-icon>
+                    </button>
                 </div>
             `).join('');
         }
     }
+
+    // Expose functions to window for onclick handlers
+    window.deleteActivity = deleteActivity;
+    window.updateStatus = updateStatus;
 
     // Modal Logic
     const addBtn = document.getElementById('add-activity-btn');

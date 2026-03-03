@@ -63,5 +63,29 @@ app.get('/api/stats', async (req, res) => {
     }
 });
 
+// Update Activity Status
+app.patch('/api/activities/:id', async (req, res) => {
+    try {
+        const activity = await Activity.findByIdAndUpdate(
+            req.params.id,
+            { status: req.body.status },
+            { new: true }
+        );
+        res.json(activity);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// Delete Activity
+app.delete('/api/activities/:id', async (req, res) => {
+    try {
+        await Activity.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Actividade removida' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 // app.listen() is not needed for Vercel Serverless Functions
 module.exports = app;

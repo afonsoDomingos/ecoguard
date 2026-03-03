@@ -101,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                          style="cursor: pointer" title="Alternar Estado"></div>
                     <div class="activity-detail">
                         <h4>${activity.title}</h4>
+                        <span style="font-size: 0.7rem; color: var(--accent); display: block; margin-bottom: 2px;">Responsável: ${activity.author || 'Administrador'}</span>
                         <span>${new Date(activity.date).toLocaleDateString()} • ${activity.category}</span>
                     </div>
                     <div class="activity-impact impact-${activity.risk.toLowerCase()}">${activity.risk}</div>
@@ -142,8 +143,10 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        const inputs = form.querySelectorAll('input[type="text"]');
         const activityData = {
-            title: form.querySelector('input[type="text"]').value,
+            title: inputs[0].value,
+            author: inputs[1].value,
             category: form.querySelectorAll('select')[0].value,
             risk: form.querySelectorAll('select')[1].value,
             description: form.querySelector('textarea').value

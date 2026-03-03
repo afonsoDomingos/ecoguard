@@ -21,6 +21,7 @@ const ActivitySchema = new mongoose.Schema({
     category: String,
     risk: String,
     description: String,
+    author: { type: String, default: 'Administrador' },
     date: { type: Date, default: Date.now },
     status: { type: String, default: 'Pendente' }
 });
@@ -42,7 +43,8 @@ app.post('/api/activities', async (req, res) => {
         title: req.body.title,
         category: req.body.category,
         risk: req.body.risk,
-        description: req.body.description
+        description: req.body.description,
+        author: req.body.author
     });
 
     try {

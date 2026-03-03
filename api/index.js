@@ -63,6 +63,5 @@ app.get('/api/stats', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Servidor a correr na porta ${PORT}`);
-});
+// app.listen() is not needed for Vercel Serverless Functions
+module.exports = app;
